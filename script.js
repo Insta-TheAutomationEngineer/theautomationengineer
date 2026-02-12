@@ -193,44 +193,140 @@ document.addEventListener('DOMContentLoaded', () => {
         footerEmail.href = 'mailto:' + fullEmail;
     }
 
-    // --- Disable right-click context menu ---
+    // --- Email Obfuscation done above ---
+
+    // =============================================
+    //  SECURITY LAYER — Anti-Inspect & Protection
+    // =============================================
+
+    // 1. Disable right-click context menu
     document.addEventListener('contextmenu', (e) => {
         e.preventDefault();
+        return false;
     });
 
-    // --- Disable text selection on sensitive areas ---
-    document.querySelectorAll('.contact-link-value, .hero-name, .stat-number').forEach(el => {
-        el.style.userSelect = 'none';
-        el.style.webkitUserSelect = 'none';
+    // 2. Disable text selection globally
+    document.body.style.userSelect = 'none';
+    document.body.style.webkitUserSelect = 'none';
+    document.body.style.msUserSelect = 'none';
+    document.body.style.MozUserSelect = 'none';
+
+    // 3. Disable drag
+    document.addEventListener('dragstart', (e) => {
+        e.preventDefault();
+        return false;
     });
 
-    // --- Block common keyboard shortcuts (Ctrl+U, Ctrl+S, F12) ---
+    // 4. Disable copy/cut/paste
+    document.addEventListener('copy', (e) => e.preventDefault());
+    document.addEventListener('cut', (e) => e.preventDefault());
+
+    // 5. Block ALL keyboard shortcuts for inspect/devtools/source
     document.addEventListener('keydown', (e) => {
-        // Ctrl+U (view source)
-        if (e.ctrlKey && e.key === 'u') {
+        // F12 — DevTools
+        if (e.keyCode === 123) {
             e.preventDefault();
+            return false;
         }
-        // Ctrl+S (save page)
-        if (e.ctrlKey && e.key === 's') {
+        // Ctrl+Shift+I — Inspect Element
+        if (e.ctrlKey && e.shiftKey && e.keyCode === 73) {
             e.preventDefault();
+            return false;
         }
-        // F12 (dev tools)
-        if (e.key === 'F12') {
+        // Ctrl+Shift+J — Console
+        if (e.ctrlKey && e.shiftKey && e.keyCode === 74) {
             e.preventDefault();
+            return false;
         }
-        // Ctrl+Shift+I (dev tools)
-        if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+        // Ctrl+Shift+C — Inspect Element (alternate)
+        if (e.ctrlKey && e.shiftKey && e.keyCode === 67) {
             e.preventDefault();
+            return false;
         }
-        // Ctrl+Shift+J (console)
-        if (e.ctrlKey && e.shiftKey && e.key === 'J') {
+        // Ctrl+U — View Source
+        if (e.ctrlKey && e.keyCode === 85) {
             e.preventDefault();
+            return false;
+        }
+        // Ctrl+S — Save Page
+        if (e.ctrlKey && e.keyCode === 83) {
+            e.preventDefault();
+            return false;
+        }
+        // Ctrl+P — Print
+        if (e.ctrlKey && e.keyCode === 80) {
+            e.preventDefault();
+            return false;
+        }
+        // Ctrl+A — Select All
+        if (e.ctrlKey && e.keyCode === 65) {
+            e.preventDefault();
+            return false;
+        }
+        // Ctrl+C — Copy
+        if (e.ctrlKey && e.keyCode === 67 && !e.shiftKey) {
+            e.preventDefault();
+            return false;
+        }
+        // Ctrl+Shift+K — Firefox Console
+        if (e.ctrlKey && e.shiftKey && e.keyCode === 75) {
+            e.preventDefault();
+            return false;
+        }
+        // Ctrl+Shift+M — Responsive Design Mode
+        if (e.ctrlKey && e.shiftKey && e.keyCode === 77) {
+            e.preventDefault();
+            return false;
+        }
+        // F5 / Ctrl+R — Refresh (optional, uncomment if needed)
+        // Ctrl+G / Ctrl+F — Find
+        if (e.ctrlKey && (e.keyCode === 70 || e.keyCode === 71)) {
+            e.preventDefault();
+            return false;
         }
     });
 
-    // --- Console warning for snoopers ---
+    // 6. DevTools detection via debugger + redirect
+    (function detectDevTools() {
+        const threshold = 160;
+        const check = () => {
+            const widthDiff = window.outerWidth - window.innerWidth > threshold;
+            const heightDiff = window.outerHeight - window.innerHeight > threshold;
+            if (widthDiff || heightDiff) {
+                document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#000;color:#ff375f;font-family:Inter,sans-serif;text-align:center;padding:20px;"><div><h1 style="font-size:3rem;margin-bottom:16px;">Access Denied</h1><p style="color:#a1a1a6;font-size:1.1rem;">Developer tools are not allowed on this website.</p><p style="color:#6e6e73;margin-top:12px;">Close DevTools and refresh the page.</p></div></div>';
+            }
+        };
+        setInterval(check, 1000);
+    })();
+
+    // 7. Debugger trap — freezes if devtools is open
+    (function debuggerTrap() {
+        setInterval(() => {
+            const before = performance.now();
+            debugger;
+            const after = performance.now();
+            if (after - before > 100) {
+                document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#000;color:#ff375f;font-family:Inter,sans-serif;text-align:center;padding:20px;"><div><h1 style="font-size:3rem;margin-bottom:16px;">Access Denied</h1><p style="color:#a1a1a6;font-size:1.1rem;">Inspecting this website is not permitted.</p><p style="color:#6e6e73;margin-top:12px;">Close DevTools and refresh the page.</p></div></div>';
+            }
+        }, 3000);
+    })();
+
+    // 8. Disable image dragging
+    document.querySelectorAll('img, svg').forEach(el => {
+        el.setAttribute('draggable', 'false');
+        el.addEventListener('dragstart', (e) => e.preventDefault());
+    });
+
+    // 9. Console warning
     console.log('%cStop!', 'color: #ff375f; font-size: 48px; font-weight: 900;');
     console.log('%cThis is a browser feature intended for developers. If someone told you to copy-paste something here, it is a scam.', 'color: #a1a1a6; font-size: 16px;');
     console.log('%cDesigned & Built by Achal Singh — TheAutomationEngineer', 'color: #2997ff; font-size: 14px;');
+
+    // 10. Clear console repeatedly
+    setInterval(() => {
+        console.clear();
+        console.log('%cStop!', 'color: #ff375f; font-size: 48px; font-weight: 900;');
+        console.log('%cInspecting this website is not allowed.', 'color: #a1a1a6; font-size: 16px;');
+    }, 2000);
 
 });

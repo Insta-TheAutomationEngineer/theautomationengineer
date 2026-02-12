@@ -329,4 +329,118 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('%cInspecting this website is not allowed.', 'color: #a1a1a6; font-size: 16px;');
     }, 2000);
 
+    // 11. Detect Automation Tools (Selenium, Puppeteer, PhantomJS)
+    (function detectBots() {
+        const isBot = (
+            navigator.webdriver ||
+            window.__selenium_unwrapped ||
+            window.__webdriver_evaluate ||
+            window.__driver_evaluate ||
+            window.__webdriver_unwrapped ||
+            window.__fxdriver_unwrapped ||
+            window._phantom ||
+            window.callPhantom ||
+            window.__nightmare ||
+            navigator.languages === '' ||
+            navigator.languages.length === 0
+        );
+        if (isBot) {
+            document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#000;color:#ff375f;font-family:Inter,sans-serif;text-align:center;padding:20px;"><div><h1 style="font-size:3rem;margin-bottom:16px;">Access Blocked</h1><p style="color:#a1a1a6;font-size:1.1rem;">Automated access is not permitted.</p></div></div>';
+        }
+    })();
+
+    // 12. Disable Print via JavaScript
+    window.addEventListener('beforeprint', (e) => {
+        document.body.style.display = 'none';
+    });
+    window.addEventListener('afterprint', () => {
+        document.body.style.display = '';
+    });
+
+    // 13. Disable Page Save (Ctrl+S fallback via beforeunload)
+    window.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.keyCode === 83) {
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    // 14. Block iframe embedding (JS level)
+    if (window.top !== window.self) {
+        window.top.location = window.self.location;
+    }
+
+    // 15. Detect Print Screen key
+    document.addEventListener('keyup', (e) => {
+        // PrintScreen key
+        if (e.keyCode === 44) {
+            document.body.style.filter = 'blur(10px)';
+            setTimeout(() => {
+                document.body.style.filter = 'none';
+            }, 1500);
+        }
+    });
+
+    // 16. Disable View Source via blank page trick
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.keyCode === 85) {
+            e.preventDefault();
+            window.location.href = 'about:blank';
+            return false;
+        }
+    });
+
+    // 17. Monitor for DOM tampering
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            mutation.addedNodes.forEach((node) => {
+                // Detect injected scripts
+                if (node.tagName === 'SCRIPT' && !node.src.includes(window.location.hostname)) {
+                    node.remove();
+                }
+                // Detect devtools extensions injecting elements
+                if (node.id && (node.id.includes('devtools') || node.id.includes('inspector'))) {
+                    node.remove();
+                }
+            });
+        });
+    });
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+
+    // 18. Disable middle-click (open in new tab)
+    document.addEventListener('auxclick', (e) => {
+        if (e.button === 1) {
+            e.preventDefault();
+        }
+    });
+
+    // 19. Anti-debugging: override console methods
+    const noop = () => {};
+    setTimeout(() => {
+        Object.defineProperty(window, 'console', {
+            value: {
+                log: noop,
+                warn: noop,
+                error: noop,
+                info: noop,
+                debug: noop,
+                clear: noop,
+                dir: noop,
+                table: noop,
+                trace: noop,
+                assert: noop,
+                count: noop,
+                countReset: noop,
+                group: noop,
+                groupCollapsed: noop,
+                groupEnd: noop,
+                time: noop,
+                timeLog: noop,
+                timeEnd: noop,
+            },
+            writable: false,
+            configurable: false,
+        });
+    }, 5000);
+
 });

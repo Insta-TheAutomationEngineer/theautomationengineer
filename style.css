@@ -1361,3 +1361,49 @@ img {
         height: 18px;
     }
 }
+
+/* --- Security: Disable Print --- */
+@media print {
+    html, body {
+        display: none !important;
+        visibility: hidden !important;
+    }
+
+    * {
+        display: none !important;
+    }
+}
+
+/* --- Security: Invisible Watermark (shows on screenshot/print attempts) --- */
+body::after {
+    content: 'TheAutomationEngineer - Achal Singh - Protected Content';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.003);
+    pointer-events: none;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(-30deg);
+    letter-spacing: 10px;
+}
+
+/* --- Security: Prevent image save --- */
+img, svg {
+    pointer-events: none;
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
+}
+
+/* --- Security: Prevent text highlight everywhere --- */
+* {
+    -webkit-tap-highlight-color: transparent;
+}

@@ -174,4 +174,63 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // --- Email Obfuscation (anti-spam bot) ---
+    const emailParts = ['er.achalsingh', 'sisodiya', '@', 'gmail', '.com'];
+    const fullEmail = emailParts[0] + emailParts[1] + emailParts[2] + emailParts[3] + emailParts[4];
+
+    const emailLink = document.getElementById('emailLink');
+    const emailText = document.getElementById('emailText');
+    const footerEmail = document.getElementById('footerEmail');
+
+    if (emailText) {
+        emailText.textContent = fullEmail;
+    }
+    if (emailLink) {
+        emailLink.href = 'mailto:' + fullEmail;
+        emailLink.onclick = null;
+    }
+    if (footerEmail) {
+        footerEmail.href = 'mailto:' + fullEmail;
+    }
+
+    // --- Disable right-click context menu ---
+    document.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+    });
+
+    // --- Disable text selection on sensitive areas ---
+    document.querySelectorAll('.contact-link-value, .hero-name, .stat-number').forEach(el => {
+        el.style.userSelect = 'none';
+        el.style.webkitUserSelect = 'none';
+    });
+
+    // --- Block common keyboard shortcuts (Ctrl+U, Ctrl+S, F12) ---
+    document.addEventListener('keydown', (e) => {
+        // Ctrl+U (view source)
+        if (e.ctrlKey && e.key === 'u') {
+            e.preventDefault();
+        }
+        // Ctrl+S (save page)
+        if (e.ctrlKey && e.key === 's') {
+            e.preventDefault();
+        }
+        // F12 (dev tools)
+        if (e.key === 'F12') {
+            e.preventDefault();
+        }
+        // Ctrl+Shift+I (dev tools)
+        if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+            e.preventDefault();
+        }
+        // Ctrl+Shift+J (console)
+        if (e.ctrlKey && e.shiftKey && e.key === 'J') {
+            e.preventDefault();
+        }
+    });
+
+    // --- Console warning for snoopers ---
+    console.log('%cStop!', 'color: #ff375f; font-size: 48px; font-weight: 900;');
+    console.log('%cThis is a browser feature intended for developers. If someone told you to copy-paste something here, it is a scam.', 'color: #a1a1a6; font-size: 16px;');
+    console.log('%cDesigned & Built by Achal Singh — TheAutomationEngineer', 'color: #2997ff; font-size: 14px;');
+
 });

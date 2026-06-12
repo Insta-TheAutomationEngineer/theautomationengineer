@@ -1,0 +1,33 @@
+# ============================================================
+# Real HTTP security headers — TheAutomationEngineer
+# ------------------------------------------------------------
+# Place this file (named exactly "_headers", no extension) in the
+# ROOT of a Netlify or Cloudflare Pages deploy. These cannot hide
+# source (nothing can) — they shut down the attacks that actually
+# matter: XSS/injection, clickjacking, MIME sniffing, protocol
+# downgrade, and referrer / permission leakage.
+#
+# All fonts are self-hosted, so the CSP below allows ZERO external
+# origins — the strictest policy a website can run.
+#
+# GitHub Pages ignores _headers (no custom headers allowed there).
+# The <meta> CSP in index.html still applies on GitHub Pages, but
+# for the complete set use Netlify or Cloudflare Pages.
+# After deploy, verify at https://securityheaders.com — this set
+# scores A+. Optionally submit your domain at https://hstspreload.org
+# ============================================================
+
+/*
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=(), interest-cohort=()
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp
+  Cross-Origin-Resource-Policy: same-origin
+  X-Permitted-Cross-Domain-Policies: none
+
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable

@@ -294,9 +294,14 @@
     const onScroll=()=>{if(raf)return;raf=requestAnimationFrame(()=>{raf=0;update();});};
     window.addEventListener('scroll',onScroll,{passive:true});
 
-    let rt=0;
+    let rt=0, lastW=window.innerWidth;
     const rebuild=()=>{clearTimeout(rt);rt=setTimeout(build,180);};
-    window.addEventListener('resize',rebuild);
+    window.addEventListener('resize',()=>{
+      const w=window.innerWidth;
+      if(w!==lastW){ lastW=w; rebuild(); }  // real resize / rotation -> rebuild path
+      else{ update(); }                     // height-only (mobile URL bar hide/show) -> cheap
+    });
+    window.addEventListener('orientationchange',()=>setTimeout(rebuild,250));
     if(window.ResizeObserver){const ro=new ResizeObserver(rebuild);ro.observe(document.body);}
 
     const kick=()=>build();

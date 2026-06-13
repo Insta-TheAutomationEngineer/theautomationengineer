@@ -50,8 +50,17 @@
 
   /* ---------- mobile menu ---------- */
   const menuBtn=document.getElementById('menuBtn'), tabs=document.getElementById('tabs');
-  if(menuBtn){menuBtn.addEventListener('click',()=>{menuBtn.classList.toggle('open');tabs.classList.toggle('show');});
-    tabs.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{menuBtn.classList.remove('open');tabs.classList.remove('show');}));}
+  if(menuBtn&&tabs){
+    const setMenu=(open)=>{
+      menuBtn.classList.toggle('open',open);
+      tabs.classList.toggle('show',open);
+      menuBtn.setAttribute('aria-expanded',open?'true':'false');
+    };
+    menuBtn.addEventListener('click',(e)=>{e.stopPropagation();setMenu(!tabs.classList.contains('show'));});
+    tabs.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setMenu(false)));
+    document.addEventListener('click',(e)=>{ if(tabs.classList.contains('show') && !tabs.contains(e.target) && !menuBtn.contains(e.target)) setMenu(false); });
+    document.addEventListener('keydown',(e)=>{ if(e.key==='Escape') setMenu(false); });
+  }
 
   /* ---------- topbar shadow ---------- */
   const topbar=document.getElementById('topbar');

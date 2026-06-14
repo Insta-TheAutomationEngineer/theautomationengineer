@@ -384,6 +384,19 @@ h2.title em{font-style:normal;color:var(--data)}
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
 .reveal.in{opacity:1;transform:none}
 
+/* ============ OVERFLOW SAFETY (prevents right-edge clipping on mobile) ============ */
+/* Flex/grid items default to min-width:auto and refuse to shrink below their content's
+   intrinsic width — a wide child (e.g. the no-wrap code block) then pushes the whole
+   page wider than the viewport and overflow-x:hidden clips the right edge of everything.
+   Allowing these to shrink fixes it at every screen size. */
+.brief-grid>*{min-width:0}
+.clip{min-width:0}
+.clip-tc{flex-wrap:wrap}
+.hi{min-width:0}
+.hi>div{min-width:0}
+.codecard,.codecard pre{max-width:100%}
+.clip li,.hi h3,.hi p,.meta-row .v,.brief-lede,.brief-body{overflow-wrap:break-word}
+
 /* ====================== RESPONSIVE ====================== */
 
 /* tablet / small laptop */
@@ -448,6 +461,10 @@ h2.title em{font-style:normal;color:var(--data)}
   .ann-6{left:84%}
   /* roomier CTA card */
   .export{padding:42px 22px}
+  /* stop right-edge clipping: wrap the code block, stack the highlight cards full-width */
+  .codecard pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px}
+  .hi{flex-direction:column;align-items:stretch;gap:12px}
+  .hi .big{min-width:0}
 }
 
 /* small phones: free up the toolbar; trim chart to 3 clean callouts */

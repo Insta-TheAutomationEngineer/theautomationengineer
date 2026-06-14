@@ -143,8 +143,7 @@
     }
     setFrac(0);
 
-    // autoplay state declared before the handlers that reference it
-    let dragging=false, auto=!reduce, t0=performance.now();
+    let dragging=false;
     const fracFromX=(clientX)=>{const r=wrap.getBoundingClientRect();return (clientX-r.left)/r.width;};
     const startDrag=(x)=>{dragging=true;auto=false;setFrac(fracFromX(x));};
     const moveDrag=(x)=>{if(dragging)setFrac(fracFromX(x));};
@@ -155,15 +154,15 @@
     strip.addEventListener('pointercancel',endDrag);
     wrap.addEventListener('pointerdown',e=>{auto=false;setFrac(fracFromX(e.clientX));});
     wrap.addEventListener('pointermove',e=>{if(e.buttons===1)setFrac(fracFromX(e.clientX));});
-    strip.addEventListener('pointerenter',()=>{auto=false;document.getElementById('stripHint').textContent='scrubbing — release to hold';});
 
-    // gentle autoplay until the user takes over; the loop STOPS once auto is false (no idle battery drain)
+    // gentle autoplay until user interacts (skip when reduced motion)
+    let auto=!reduce, t0=performance.now();
     function loop(now){
-      if(!auto)return;
-      setFrac(((now-t0)/4200)%1);
+      if(auto){const p=((now-t0)/4200)%1;setFrac(p);}
       requestAnimationFrame(loop);
     }
     if(!reduce)requestAnimationFrame(loop);
+    strip.addEventListener('pointerenter',()=>{auto=false;document.getElementById('stripHint').textContent='scrubbing — release to hold';});
   })();
 
   /* ============================================================

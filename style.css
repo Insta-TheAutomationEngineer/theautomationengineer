@@ -442,7 +442,7 @@ h2.title em{font-style:normal;color:var(--data)}
   .plot{left:34px;right:10px}
   .x-ax{left:34px;right:10px}
   .x-ax span,.y-ax span{font-size:9px}
-  .ann.amber,.ann-2{display:none}   /* keep 3 well-separated callouts: 2020, 2024, now */
+  .ann.amber{display:none}
   .ann{min-width:86px;padding:6px 8px}
   .ann .tx{font-size:10px}
   .ann-6{left:84%}
@@ -455,6 +455,7 @@ h2.title em{font-style:normal;color:var(--data)}
   .bar-tc .live{display:none}
   .brand{font-size:14px}
   .chart-frame{height:312px}
+  .ann-2{display:none}
   .ann-6{left:80%}
   .legend{gap:10px 14px}.legend span{font-size:10px}
   .chart-note{font-size:11px}
